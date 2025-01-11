@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aave leverage gain</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom right, #5f3473, #71c1d6); /* Background gradient */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white; /* White text on colored background */
+            flex-direction: column;
+        }
+
+        .title {
+            font-size: 2.6rem; /* Increased title size */
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            font-size: 1.3rem; /* Subtitle size */
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: normal;
+            width: 60%; /* Adjusted width to center align better */
+            word-wrap: break-word; /* Allow breaking the text into multiple lines */
+            line-height: 1.2; /* Adjust line height for better readability */
+        }
+
+        .container {
+            width: 600px; /* Width of the container */
+            max-width: 100%; /* Ensure responsiveness */
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            justify-content: center; /* Center the elements (label + input) horizontally */
+        }
+
+        .input-group label {
+            font-size: 1.44rem; /* Increased label size */
+            margin-right: 15px; /* Space between label and input field */
+            text-align: left; /* Left-aligned labels */
+            padding-left: 0;
+            width: auto;
+            white-space: nowrap; /* Prevent label text from wrapping */
+        }
+
+        .input-group input {
+            padding: 8px; /* Reduced padding for a lighter design */
+            border: 1px solid #fff;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.2); /* Semi-transparent input fields */
+            color: white;
+            font-size: 1.1rem;
+            width: 50px; /* Reduced width for input fields */
+        }
+
+        .result {
+            font-size: 1.8rem; /* Increased result text size */
+            font-weight: bold;
+            text-align: center; /* Centered result text */
+            margin-top: 30px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            color: #ffd700; /* Gold result text */
+            width: 500px; /* Increased width of result container */
+            margin: 0 auto;
+        }
+
+        @media (max-width: 600px) {
+            .input-group label {
+                width: auto; /* Adjust width of labels on small screens */
+            }
+            .input-group input {
+                width: 90%; /* Inputs take max width available on small screens */
+            }
+            .container {
+                width: 90%; /* Resize container for small screens */
+            }
+            .title {
+                font-size: 2.2rem; /* Adjusted title size for smaller screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main header -->
+    <div class="title">Aave leverage gain</div>
+
+    <div class="subtitle">
+        Calculate the leverage gain at the end of investment, with <br> health factor, desired performance of collateral, and debt rate.
+    </div>
+
+    <div class="container">
+        <div class="input-group">
+            <label for="hr">Health factor</label>
+            <input type="number" id="hr" step="any" value="2.5"> <!-- Default value 2.5 -->
+        </div>
+        
+        <div class="input-group">
+            <label for="r">Desired performance of collateral <br> at end of investment (%)</label>
+            <input type="number" id="r" step="any" value="100"> <!-- Default value 100 -->
+        </div>
+
+        <div class="input-group">
+            <label for="i">Debt rate (%)</label>
+            <input type="number" id="i" step="any" value="10"> <!-- Default value 10 -->
+        </div>
+
+        <div class="result">Leverage gain at end of investment = <span id="result">0%</span></div>
+    </div>
+
+    <script>
+        // Get elements by their ID
+        const hrInput = document.getElementById('hr');
+        const rInput = document.getElementById('r');
+        const iInput = document.getElementById('i');
+        const resultSpan = document.getElementById('result');
+
+        // Function to calculate Leverage Gain
+        function calculateG() {
+            const hr = parseFloat(hrInput.value) || 0;
+            const r = (parseFloat(rInput.value) || 0) / 100; // Convert to decimal
+            const i = (parseFloat(iInput.value) || 0) / 100; // Convert to decimal
+
+            if (hr !== 1) { // Prevent division by zero
+                const G = ((hr * (1 + r) - (1 + i)) / ((hr - 1) * (1 + r))) - 1;
+                resultSpan.textContent = (G * 100).toFixed(1) + '%'; // Display result with 1 decimal place
+            } else {
+                resultSpan.textContent = 'Error';
+            }
+        }
+
+        // Add event listeners to trigger live calculations
+        hrInput.addEventListener('input', calculateG);
+        rInput.addEventListener('input', calculateG);
+        iInput.addEventListener('input', calculateG);
+
+        // Calculate Leverage Gain on page load
+        calculateG();  // Call the function immediately to display the default value calculation
+    </script>
+</body>
+</html>
+
